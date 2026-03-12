@@ -5,18 +5,21 @@ import statistics as st
 import locale
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
 #ENTRADAS
 capital = float(input('Capital Inicial: '))
 aporte  = float(input('Aporte Mensal: '))
 meses   = int(input('Prazo (meses): '))
-cdi_anual= float(input('CDI anual (%)')) / 100
-perc_cdb = float(input('Percentual do CDI (%)')) / 100
-perc_lci = float(input('Percentual do LCI (%)')) / 100
-taxa_fii = float(input('Rentabilidade mensal do FII (%)'))/100
-meta=float(input('Meta financeira (R$) '))
+cdi_anual= float(input('CDI anual (%): ')) / 100
+perc_cdb = float(input('Percentual do CDI CDB (%): ')) / 100
+perc_lci = float(input('Percentual do LCI (%): ')) / 100
+taxa_fii = float(input('Rentabilidade mensal do FII (%): '))/100
+meta=float(input('Meta financeira (R$): '))
+
 #PROCESSAMENTO
 cdi_mensal=math.pow((1+cdi_anual), 1/12) -1
 total_investido=capital+(aporte*meses)
+
 #CDB
 taxa_cdb=cdi_mensal*perc_cdb
 montante_cdb=(capital*math.pow((1+taxa_cdb), meses)+(aporte*meses))
@@ -57,16 +60,39 @@ data_resgate = data_simulacao + datetime.timedelta(days = meses * 30)
 # META
 meta_atingida = media_fii >= meta
 
-#saidas
-print("\n===== RELATÓRIO DE INVESTIMENTO =====\n")
+#GRAFICO
+bcs_cdb = int(montante_cdb_liquido / 1000)
+bcs_lci = int(montante_lci / 1000)
+bcs_poupamca = int(montante_poupanca / 1000)
+bcs_fii = int(montante_fii / 1000)
 
-print(f'Data da simulação: {data_simulacao.strftime('%d/%m/%Y')}')
-print(f'Data de resgate: {data_resgate.strftime('%d/%m/%Y')} ')
-print(f'Valor investido: {locale.currency(total_investido, grouping=True)}')
+
+#saidas
+print('-' * 40)
+print(" PyInvest Simulador de Investimentos")
+print('=' * 40)
+print(f'data da simulacao:{data_simulacao.strftime("%d/%m/%Y")}')
+print(f'data de resgaste:{data_resgate.strftime("%d/%m/%Y")}')
+print('=' * 40)
+print('       ')
+print(f'total_investido:{locale.currency(total_investido, grouping=True)}')
+print('       ')
+print('--- RESULTADOS FINANCEIROS ---')
 print(f'CDB: {locale.currency(montante_cdb_liquido, grouping=True)}')
-print(f'LCI: {locale.currency(montante_lci, grouping=True)}')
-print(f'Poupança: {locale.currency(montante_poupanca, grouping=True)}')
-print(f'FII (Média): {locale.currency(media_fii, grouping=True)}')
-print(f'Mediana: {locale.currency(mediana_fii, grouping=True)}')
-print(f'Desvio padrão: {locale.currency(dp_fii, grouping=True)}')
-print(f'Meta atingida? {media_fii >= meta}')
+print(f'{'\u2588'* bcs_cdb}')
+print('       ')
+print(f'LCI:{locale.currency(montante_lci, grouping=True)}')
+print(f'{'\u2588'* bcs_lci}')
+print('       ')
+print(f'poupanca:{locale.currency(montante_poupanca, grouping=True)}')
+print(f'{'\u2588'* bcs_poupamca}')
+print('       ')
+print(f'FII(media:{locale.currency(media_fii, grouping=True)}')
+print(f'{'\u2588'* bcs_fii}')
+print('       ')
+print('--- ESTATISTICAS FII ---')
+print(f'mediana:{locale.currency(mediana_fii, grouping=True)}')
+print(f'Desvio_padrao:{locale.currency(dp_fii, grouping=True)}')
+print('       ')
+print(f'Meta atingida?:{media_fii >= meta}')
+print('=' * 40)
